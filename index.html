@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>960gamerz — Play Games</title>
+  <meta name="description" content="Poki‑style free games by 960gamerz. Play in your browser!" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎮</text></svg>">
+  <style>
+    :root {
+      --bg: #0b0e13;
+      --card: #121722;
+      --muted: #9aa4b2;
+      --text: #e8edf3;
+      --accent: #5ce1e6;
+      --accent-2: #7cf4a1;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text); background: radial-gradient(1200px 600px at 20% -10%, rgba(92,225,230,.15), transparent 60%),
+               radial-gradient(1000px 500px at 110% 10%, rgba(124,244,161,.12), transparent 60%), var(--bg);
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 1150px; margin: 0 auto; padding: 16px; }
+    header { position: sticky; top: 0; z-index: 40; backdrop-filter: blur(8px); background: rgba(11,14,19,.6); border-bottom: 1px solid rgba(255,255,255,.06); }
+    .topbar { display: flex; gap: 12px; align-items: center; padding: 12px 16px; }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .3px; }
+    .logo .badge { font-size: 13px; padding: 2px 8px; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #041015; font-weight: 800; }
+    .searchbar { margin-left: auto; display: flex; gap: 8px; align-items: center; background: #0f1420; border: 1px solid rgba(255,255,255,.08); padding: 8px 12px; border-radius: 12px; width: min(420px, 55vw); }
+    .searchbar input { flex: 1; background: transparent; border: 0; color: var(--text); outline: none; font-size: 15px; }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 16px 0 16px; }
+    .pill { border: 1px solid rgba(255,255,255,.1); color: var(--muted); padding: 6px 10px; border-radius: 999px; font-size: 13px; cursor: pointer; user-select: none; }
+    .pill.active { background: linear-gradient(90deg, rgba(92,225,230,.18), rgba(124,244,161,.18)); color: var(--text); border-color: rgba(255,255,255,.2); }
+    .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; padding: 16px; }
+    @media (max-width: 1100px) { .grid { grid-template-columns: repeat(5, 1fr);} }
+    @media (max-width: 900px) { .grid { grid-template-columns: repeat(4, 1fr);} }
+    @media (max-width: 700px) { .grid { grid-template-columns: repeat(3, 1fr);} }
+    @media (max-width: 520px) { .grid { grid-template-columns: repeat(2, 1fr);} }
+    .card { position: relative; background: #0f1420; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; overflow: hidden; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, border-color .15s; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,.4); border-color: rgba(255,255,255,.18); }
+    .thumb { aspect-ratio: 16 / 9; background: linear-gradient(135deg, #1a2030, #0d1220); display: grid; place-items: center; font-size: 34px; }
+    .title { padding: 10px 12px; font-weight: 700; font-size: 14px; letter-spacing: .2px; }
+    .meta { padding: 0 12px 12px; font-size: 12px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+    .tag { background: rgba(255,255,255,.06); padding: 2px 8px; border-radius: 999px; }
+    .adbar { display: flex; justify-content: center; align-items: center; height: 80px; margin: 10px 16px; border: 1px dashed rgba(255,255,255,.25); border-radius: 12px; background: rgba(15,20,32,.6); color: var(--muted); font-size: 13px; }
+
+    .modal { position: fixed; inset: 0; display: none; place-items: center; background: rgba(2,5,10,.68); backdrop-filter: blur(4px); z-index: 60; padding: 18px; }
+    .modal.show { display: grid; }
+    .sheet { width: min(1000px, 96vw); border-radius: 16px; background: #0b0f18; border: 1px solid rgba(255,255,255,.12); overflow: hidden; box-shadow: 0 30px 70px rgba(0,0,0,.6); }
+    .sheet-header { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .sheet-title { font-weight: 800; letter-spacing: .3px; }
+    .xbtn { margin-left: auto; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); color: var(--text); border-radius: 9px; padding: 6px 10px; cursor: pointer; }
+    .sheet-body { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; padding: 12px; }
+    @media (max-width: 860px) { .sheet-body { grid-template-columns: 1fr; } }
+    .stage { background: #0f1420; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; min-height: 420px; display: grid; place-items: center; overflow: hidden; }
+    .side { display: grid; gap: 12px; }
+    iframe.gameframe { width: 100%; height: 520px; border: 0; background: #000; }
+    canvas { display:block; background:#000; }
+
+    footer { padding: 30px 16px; text-align: center; color: var(--muted); font-size: 13px; }
+    .btn { border: 1px solid rgba(255,255,255,.14); background: #0f1420; color: var(--text); padding: 8px 10px; border-radius: 10px; font-size: 13px; cursor: pointer; }
+    .btn:hover { border-color: rgba(255,255,255,.25); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar wrap">
+      <div class="logo">
+        <span style="font-size:20px">🎮</span>
+        <span>960gamerz</span>
+        <span class="badge">PLAY</span>
+      </div>
+      <div class="searchbar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="1.6" opacity=".7"/></svg>
+        <input id="q" placeholder="Search games, e.g. Snake, Flappy…"/>
+      </div>
+    </div>
+    <div class="controls wrap" id="cats"></div>
+
+    <!-- Top Banner (Pounder) -->
+    <div class="adbar" id="ad-top">
+      <script type='text/javascript' src='//pl27588401.revenuecpmgate.com/f8/89/f9/f889f9c5c9b59d3fe55398aaaf8fcdf3.js'></script>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid" id="grid"></div>
+
+    <!-- Middle Banner (Social Ads) -->
+    <div class="adbar" id="ad-mid">
+      <script type='text/javascript' src='//pl27588405.revenuecpmgate.com/e4/fa/74/e4fa7449e634e7da702667cddea9bee1.js'></script>
+    </div>
+  </main>
+
+  <div class="modal" id="modal">
+    <div class="sheet">
+      <div class="sheet-header">
+        <div class="sheet-title" id="modalTitle">Game</div>
+        <button class="xbtn" id="closeBtn">Close ✕</button>
+      </div>
+      <div class="sheet-body">
+        <div class="stage" id="stage"></div>
+        <aside class="side">
+
+          <!-- Side Banner (Native Ad) -->
+          <div class="adbar">
+            <script async="async" data-cfasync="false" src="//pl27588410.revenuecpmgate.com/e17da51898992bd9dd451f0f96521a0e/invoke.js"></script>
+            <div id="container-e17da51898992bd9dd451f0f96521a0e"></div>
+          </div>
+
+          <div style="background:#0f1420;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px">
+            <div style="font-weight:800;margin-bottom:6px">How to Play</div>
+            <div id="howto" style="color:var(--muted);font-size:14px;line-height:1.5">Use arrows / space. Avoid obstacles. Collect points.</div>
+            <hr style="border:0;border-top:1px solid rgba(255,255,255,.08);margin:12px 0">
+            <button class="btn" id="restartBtn" style="width:100%">Restart</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    © <span id="yr"></span> 960gamerz • Built with ❤ for the web • <a href="https://github.com/960gamerz" target="_blank" rel="noopener">GitHub</a>
+  </footer>
+
+  <script>
+    const games = [
+      { id: 'flappysquare', title: 'Flappy Square', category: 'Arcade', description: 'Tap/Space to flap. Avoid pipes. Simple & addictive.', thumb: '🟩', type: 'builtin', howto: 'Press Space / Tap to flap. Don\'t hit pipes.' },
+      { id: 'snake', title: 'Classic Snake', category: 'Retro', description: 'Eat apples, grow longer. Avoid your tail.', thumb: '🟩🐍', type: 'builtin', howto: 'Use Arrow keys. Eat apples, avoid walls & tail.' },
+      { id: 'embed-demo', title: 'Embed your own game', category: 'How‑To', description: 'Point to /games/yourgame/index.html in repo.', thumb: '🧩', type: 'iframe', url: './games/demo/index.html', howto: 'Place your exported HTML5 game into /games/demo/ and update URL.' }
+    ];
+    const categories = ['All','Arcade','Retro','How‑To'];
+    const grid = document.getElementById('grid'), cats = document.getElementById('cats'), q = document.getElementById('q');
+    const modal = document.getElementById('modal'), modalTitle = document.getElementById('modalTitle'), stage = document.getElementById('stage');
+    const restartBtn = document.getElementById('restartBtn'), howto = document.getElementById('howto'), closeBtn = document.getElementById('closeBtn');
+
+    let activeCat='All', activeGame=null;
+
+    function renderCategories(){
+      cats.innerHTML='';
+      categories.forEach(c=>{
+        const el=document.createElement('div');
+        el.className='pill'+(c===activeCat?' active':'');
+        el.textContent=c;
+        el.onclick=()=>{activeCat=c; renderGrid();};
+        cats.appendChild(el);
+      });
+    }
+
+    function renderGrid(){
+      const query=q.value.trim().toLowerCase();
+      grid.innerHTML='';
+      const list = games.filter(g => (activeCat==='All'||g.category===activeCat) && (!query || g.title.toLowerCase().includes(query)));
+      list.forEach(g=>grid.appendChild(card(g)));
+    }
+
+    function card(g){
+      const wrap=document.createElement('div'); wrap.className='card'; wrap.onclick=()=>openGame(g);
+      const th=document.createElement('div'); th.className='thumb'; th.textContent=g.thumb||'🎮';
+      const title=document.createElement('div'); title.className='title'; title.textContent=g.title;
+      const meta=document.createElement('div'); meta.className='meta'; meta.innerHTML=`<span class="tag">${g.category}</span><span>${g.description}</span>`;
+      wrap.appendChild(th); wrap.appendChild(title); wrap.appendChild(meta);
+      return wrap;
+    }
+
+    function openGame(g){
+      activeGame=g; modalTitle.textContent=g.title; howto.textContent=g.howto||''; stage.innerHTML='';
+      if(g.type==='iframe'){
+        const f=document.createElement('iframe'); f.className='gameframe'; f.src=g.url; f.setAttribute('allowfullscreen',''); stage.appendChild(f); modal.classList.add('show'); return;
+      }
+      const can=document.createElement('canvas'); can.width=800; can.height=520; stage.appendChild(can);
+      if(g.id==='flappysquare') startFlappy(can);
+      else if(g.id==='snake') startSnake(can);
+      modal.classList.add('show');
+    }
+
+    function closeModal(){ modal.classList.remove('show'); stage.innerHTML=''; }
+    q.addEventListener('input', renderGrid);
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+    restartBtn.addEventListener('click', ()=>{ if(activeGame) openGame(activeGame); });
+    renderCategories(); renderGrid();
+    document.getElementById('yr').textContent=new Date().getFullYear();
+
+    // Built-in Games
+    function startFlappy(canvas){/* existing Flappy code here */ }
+    function startSnake(canvas){/* existing Snake code here */ }
+  </script>
+</body>
+</html>
